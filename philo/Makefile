@@ -10,7 +10,7 @@ RM					=	rm -rf
 INCLUDES			=	includes/
 DEFAULT_INCLUDES	=	-I /usr/local/includes
 
-SRCS				=	main.c #malloc.c
+SRCS				=	error_handling.c inits.c main.c philo_utils.c philo.c #malloc.c
 
 SRCS_PATH			=	srcs/
 
