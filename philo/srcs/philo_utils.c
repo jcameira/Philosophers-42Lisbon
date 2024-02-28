@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/24 18:58:43 by jcameira          #+#    #+#             */
-/*   Updated: 2024/02/26 12:01:53 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/02/28 11:46:10 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,10 +33,12 @@ int	args_check(char **argv)
 		j = -1;
 		while (argv[i][++j])
 		{
-			if (j == 0)
-				if (!isnum(argv[i][j]) || !issign(argv[i][j]))
-					return (0);
-			else
+			//if (j == 0)
+			//{
+			//	if (!isnum(argv[i][j]) || !issign(argv[i][j]))
+			//		return (0);
+			//}
+			//else
 				if (!isnum(argv[i][j]))
 					return (0);
 		}

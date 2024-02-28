@@ -19,7 +19,7 @@ BONUS_SRCS			=
 BONUS_SRCS_BONUS	=
 
 OBJ_DIR				=	objects/
-OBJS				=	$(SRCS_PATH:.c=$(OBJ_DIR).o)
+OBJS				=	$(SRCS:%.c=$(OBJ_DIR)%.o)
 ALL_OBJECTS			=	$(OBJ_DIR)*.o
 
 TOTAL_SRCS			=	$(words $(SRCS))
@@ -27,7 +27,7 @@ TOTAL_OBJS			=	$(words $(wildcard $(OBJ_DIR)*))
 FILES				=	0
 
 $(OBJ_DIR)%.o:		$(SRCS_PATH)%.c
-					@$(CC) $(CFLAGS) $(DEFAULT_INCLUDES) -c $< -0 $@ && \
+					@$(CC) $(CFLAGS) $(DEFAULT_INCLUDES) -c $< -o $@ && \
 					$(eval FILES=$(shell echo $$(($(FILES) + 1)))) \
 					$(call PRINT_PROGRESS,$(TOTAL_SRCS),$(GRN),$(YELLOW)Compiling$(DEFAULT) $@)
 
@@ -45,7 +45,7 @@ random_m:			$(OBJ_DIR) $(OBJS)
 					@$(CC) $(CFLAGS) $(SANITIZE) $(RANDOM_MALLOC) $(OBJS) -o $(NAME)
 					@echo "\033[2F\033[0K$(CYAN)$(NAME)$(DEFAULT) successfully created\033[E"
 
-$(OBJ_DIR)
+$(OBJ_DIR):
 					@mkdir -p $(OBJ_DIR)
 
 clean:				
@@ -64,9 +64,9 @@ fclean:				clean
 					@$(RM) $(NAME)
 					@echo "$(PURPLE)$(NAME)$(DEFAULT) deleted"
 
-re					fclean all
+re:					fclean all
 
-.PHONY				all sanitize random_m clean fclean re
+.PHONY:				all sanitize random_m clean fclean re
 
 define PRINT_PROGRESS
     if [ "$(FILES)" -eq "1" ]; then \
