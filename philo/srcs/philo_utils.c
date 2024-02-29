@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/24 18:58:43 by jcameira          #+#    #+#             */
-/*   Updated: 2024/02/28 11:46:10 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/02/29 19:29:05 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,4 +69,12 @@ int	ft_atoi(const char *str)
 		i++;
 	}
 	return (num * neg);
+}
+
+u_int64_t	gettimems(u_int64_t start)
+{
+	struct timeval	end;
+
+	gettimeofday(&end, NULL);
+	return ((((end.tv_sec * 1000000) + end.tv_usec) - start) / 1000);
 }

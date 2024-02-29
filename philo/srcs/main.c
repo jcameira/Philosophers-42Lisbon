@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/24 11:39:02 by jcameira          #+#    #+#             */
-/*   Updated: 2024/02/28 12:08:09 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/02/29 15:08:14 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,7 +14,9 @@
 
 int	main(int argc, char **argv)
 {
-	t_info	*info;
+	t_info			*info;
+	t_philo			*philos;
+	pthread_mutex_t	*fork_mutex;
 	int		i;
 
 	if (argc < 5 || argc > 6)
@@ -25,10 +27,11 @@ int	main(int argc, char **argv)
 	if (!info)
 		return (1);
 	info_init(info, argc, argv);
-	philos_mutex_init(info);
-	threads_init(info);
+	fork_mutex = fork_init(info);
+	philos = philos_init(info, fork_mutex);
+	threads_init(philos);
 	i = -1;
 	while (++i < info->number_of_philo)
-		pthread_join(info->philo_tid[i], NULL);
+		pthread_join(philos[i].tid, NULL);
 	return (0);
 }
