@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/26 20:37:49 by jcameira          #+#    #+#             */
-/*   Updated: 2024/02/29 22:30:23 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/01 13:14:44 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,16 +24,13 @@ void	*death_check(void *philo)
 		while (++i < philos[0].info->number_of_philo)
 		{
 			pthread_mutex_lock(&philos[i].info->time);
-			//printf("current_time: %lu\n", philos[i].current_time);
-			//printf("current_time: %lu\n", gettimems(philos[i].current_time));
-			//printf("current_time: %lu\n", philos[i].current_time);
 			if (gettimems(philos[i].current_time) > (u_int64_t)philos[i].info->time_to_die)
 			{
-				//printf("current_time: %lu\n", philos[i].current_time);
 				philos[i].info->finish_sim = 1;
-				pthread_mutex_lock(&philos[i].info->write);
-				printf(MSG_DEAD, gettimems(philos[i].info->start_time), philos[i].id);
-				pthread_mutex_unlock(&philos[i].info->write);
+				log_state(MSG_DEAD, &philos[i]);
+				pthread_mutex_destroy(&philos[i].info->write);
+				pthread_mutex_unlock(&philos[i].info->time);
+				pthread_mutex_destroy(&philos[i].info->time);
 				exit(1);
 			}
 			pthread_mutex_unlock(&philos[i].info->time);
@@ -42,7 +39,7 @@ void	*death_check(void *philo)
 	return (philo);
 }
 
-void	change_state(int state, t_philo *philo)
+void	log_state(int state, t_philo *philo)
 {
 	pthread_mutex_lock(&philo->info->write);
 	if (state == FORK)
@@ -60,20 +57,27 @@ void	change_state(int state, t_philo *philo)
 
 void	sleeping(t_philo *philo)
 {
-	change_state(SLEEPING, philo);
+	log_state(SLEEPING, philo);
 	usleep(philo->info->time_to_sleep * 1000);
-	change_state(THINKING, philo);
+	log_state(THINKING, philo);
 }
 
 void	eating(t_philo *philo)
 {
 	struct timeval	start;
 	
-	pthread_mutex_lock(philo->l_fork);
-	change_state(FORK, philo);
+	if (philo->info->number_of_philo > 1)
+	{
+		pthread_mutex_lock(philo->l_fork);
+		log_state(FORK, philo);
+	}
+	if (!philo->r_fork)
+		exit(1);
 	pthread_mutex_lock(philo->r_fork);
-	change_state(FORK, philo);
-	change_state(EATING, philo);
+	log_state(FORK, philo);
+	while (philo->info->number_of_philo == 1)
+		usleep(1000);
+	log_state(EATING, philo);
 	pthread_mutex_lock(&philo->info->time);
 	gettimeofday(&start, NULL);
 	philo->current_time = (start.tv_sec * 1000000) + start.tv_usec;

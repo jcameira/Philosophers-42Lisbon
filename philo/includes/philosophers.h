@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/24 11:28:43 by jcameira          #+#    #+#             */
-/*   Updated: 2024/02/29 17:05:34 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/01 13:13:16 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,5 +83,6 @@ int				ft_atoi(const char *str);
 u_int64_t		gettimems(u_int64_t start);
 void			*philo_func(void *philo);
 void			*death_check(void *philo);
+void			terminate_sim(t_philo *philos);
 
 #endif

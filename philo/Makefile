@@ -59,8 +59,6 @@ clean:
 					$(eval FILES=0)
 
 fclean:				clean
-					@$(RM) $(OBJ_DIR)
-					@echo "$(PURPLE)$(OBJ_DIR)$(DEFAULT) deleted"
 					@$(RM) $(NAME)
 					@echo "$(PURPLE)$(NAME)$(DEFAULT) deleted"
 
