@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/24 19:15:26 by jcameira          #+#    #+#             */
-/*   Updated: 2024/02/29 22:27:23 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/04 12:07:32 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,9 +26,11 @@ void	info_init(t_info *info, int argc, char **argv)
 		info->times_must_eat = ft_atoi(argv[5]);
 	else
 		info->times_must_eat = -1;
+	info->philo_satisfied = 0;
 	info->finish_sim = 0;
 	pthread_mutex_init(&info->write, NULL);
 	pthread_mutex_init(&info->time, NULL);
+	pthread_mutex_init(&info->eat, NULL);
 }
 
 void	philo_info_init(t_info *info, t_philo *philo,
@@ -44,10 +46,7 @@ void	philo_info_init(t_info *info, t_philo *philo,
 	else
 		philo->l_fork = &fork_mutex[philo_id - 2];
 	philo->r_fork = &fork_mutex[philo_id - 1];
-	philo->eating = 0;
-	philo->thinking = 1;
-	philo->sleeping = 0;
-	philo->dead = 0;
+	philo->times_eaten = 0;
 	gettimeofday(&start, NULL);
 	philo->current_time = (start.tv_sec * 1000000) + start.tv_usec;
 	philo->info = info;
