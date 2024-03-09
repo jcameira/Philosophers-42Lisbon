@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/24 19:15:26 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/04 12:07:32 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/09 16:15:39 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,7 @@ void	philo_info_init(t_info *info, t_philo *philo,
 			pthread_mutex_t *fork_mutex, int philo_id)
 {
 	struct timeval	start;
-	
+
 	philo->id = philo_id;
 	if (info->number_of_philo == 1)
 		philo->l_fork = NULL;
@@ -68,8 +68,8 @@ pthread_mutex_t	*fork_init(t_info *info)
 
 t_philo	*philos_init(t_info *info, pthread_mutex_t *fork_mutex)
 {
-	t_philo *philos;
-	int	i;
+	t_philo	*philos;
+	int		i;
 
 	philos = malloc(sizeof(t_philo) * info->number_of_philo);
 	if (!philos)

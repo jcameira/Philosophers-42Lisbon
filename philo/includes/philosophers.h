@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/24 11:28:43 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/08 11:33:12 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/09 16:13:43 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -75,7 +75,7 @@ void			info_init(t_info *info, int argc, char **argv);
 pthread_mutex_t	*fork_init(t_info *info);
 t_philo			*philos_init(t_info *info, pthread_mutex_t *fork_mutex);
 void			philo_info_init(t_info *info, t_philo *philo,
-				pthread_mutex_t *fork_mutex, int philo_id);
+					pthread_mutex_t *fork_mutex, int philo_id);
 void			*threads_init(t_philo *philos);
 int				isnum(char str);
 int				args_check(char **argv);

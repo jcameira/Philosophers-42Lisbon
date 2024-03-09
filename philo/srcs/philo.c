@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/26 20:37:49 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/08 13:52:24 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/09 16:19:50 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,7 @@ void	eat_check(t_philo *philos)
 	int	i;
 
 	i = -1;
-	while(++i < philos[0].info->number_of_philo)
+	while (++i < philos[0].info->number_of_philo)
 	{
 		pthread_mutex_lock(&philos[i].info->eat);
 		if (philos[i].times_eaten >= philos[i].info->times_must_eat)
@@ -33,7 +33,7 @@ void	eat_check(t_philo *philos)
 void	*death_check(void *philo)
 {
 	t_philo	*philos;
-	int	i;
+	int		i;
 
 	philos = (t_philo *)philo;
 	while (!philos[0].info->finish_sim)
@@ -54,24 +54,18 @@ void	*death_check(void *philo)
 			pthread_mutex_unlock(&philos[i].info->time);
 		}
 		if (philos[0].info->times_must_eat > -1)
-				eat_check(philos);
+			eat_check(philos);
 	}
 	return (philo);
 }
 
 void	log_state(int state, t_philo *philo)
 {
+	const char	*messages[5] = {MSG_FORK, MSG_EATING, MSG_SLEEPING,
+		MSG_THINKING, MSG_DEAD};
+
 	pthread_mutex_lock(&philo->info->write);
-	if (state == FORK)
-		printf(MSG_FORK, gettimems(philo->info->start_time), philo->id);
-	else if (state == EATING)
-		printf(MSG_EATING, gettimems(philo->info->start_time), philo->id);
-	else if (state == SLEEPING)
-		printf(MSG_SLEEPING, gettimems(philo->info->start_time), philo->id);
-	else if (state == THINKING)
-		printf(MSG_THINKING, gettimems(philo->info->start_time), philo->id);
-	else if (state == DEAD)
-		printf(MSG_DEAD, gettimems(philo->info->start_time), philo->id);
+	printf(messages[state], gettimems(philo->info->start_time), philo->id);
 	pthread_mutex_unlock(&philo->info->write);
 }
 
@@ -81,6 +75,11 @@ void	sleeping(t_philo *philo)
 	usleep(philo->info->time_to_sleep * 1000);
 	log_state(THINKING, philo);
 }
+
+// void	grab_forks(t_philo *philo)
+// {
+	
+// }
 
 void	eating(t_philo *philo)
 {
