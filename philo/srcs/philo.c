@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/26 20:37:49 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/09 16:19:50 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/11 18:57:01 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,14 +20,14 @@ void	eat_check(t_philo *philos)
 	while (++i < philos[0].info->number_of_philo)
 	{
 		pthread_mutex_lock(&philos[i].info->eat);
-		if (philos[i].times_eaten >= philos[i].info->times_must_eat)
-			philos[i].info->philo_satisfied++;
+		if (philos[i].times_eaten >= philos->info->times_must_eat)
+			philos->info->philo_satisfied++;
 		pthread_mutex_unlock(&philos[i].info->eat);
 	}
 	if (philos[0].info->philo_satisfied == philos[0].info->number_of_philo)
-		terminate_sim(philos);
+		philos->info->finish_sim = 1;
 	else
-		philos[i].info->philo_satisfied = 0;
+		philos->info->philo_satisfied = 0;
 }
 
 void	*death_check(void *philo)
@@ -36,22 +36,20 @@ void	*death_check(void *philo)
 	int		i;
 
 	philos = (t_philo *)philo;
-	while (!philos[0].info->finish_sim)
+	while (!philos->info->finish_sim)
 	{
 		i = -1;
-		while (++i < philos[0].info->number_of_philo)
+		while (++i < philos->info->number_of_philo)
 		{
-			pthread_mutex_lock(&philos[i].info->time);
-			if (gettimems(philos[i].current_time) > (u_int64_t)philos[i].info->time_to_die)
+			pthread_mutex_lock(&philos->info->time);
+			if (gettimems(philos[i].current_time) >= (u_int64_t)philos[i].info->time_to_die)
 			{
-				philos[i].info->finish_sim = 1;
 				log_state(DEAD, &philos[i]);
-				pthread_mutex_destroy(&philos[i].info->write);
-				pthread_mutex_unlock(&philos[i].info->time);
-				pthread_mutex_destroy(&philos[i].info->time);
-				terminate_sim(philos);
+				philos->info->finish_sim = 1;
+				pthread_mutex_unlock(&philos->info->time);
+				return (philo);
 			}
-			pthread_mutex_unlock(&philos[i].info->time);
+			pthread_mutex_unlock(&philos->info->time);
 		}
 		if (philos[0].info->times_must_eat > -1)
 			eat_check(philos);
@@ -64,9 +62,12 @@ void	log_state(int state, t_philo *philo)
 	const char	*messages[5] = {MSG_FORK, MSG_EATING, MSG_SLEEPING,
 		MSG_THINKING, MSG_DEAD};
 
-	pthread_mutex_lock(&philo->info->write);
-	printf(messages[state], gettimems(philo->info->start_time), philo->id);
-	pthread_mutex_unlock(&philo->info->write);
+	if (!philo->info->finish_sim)
+	{
+		pthread_mutex_lock(&philo->info->write);
+		printf(messages[state], gettimems(philo->info->start_time), philo->id);
+		pthread_mutex_unlock(&philo->info->write);
+	}
 }
 
 void	sleeping(t_philo *philo)
@@ -76,44 +77,80 @@ void	sleeping(t_philo *philo)
 	log_state(THINKING, philo);
 }
 
-// void	grab_forks(t_philo *philo)
-// {
-	
-// }
+void	grab_forks(t_philo *philo)
+{
+	if (philo->id % 2 == 0)
+	{
+		pthread_mutex_lock(philo->l_fork);
+		log_state(FORK, philo);
+		pthread_mutex_lock(philo->r_fork);
+		log_state(FORK, philo);
+	}
+	else
+	{
+		pthread_mutex_lock(philo->r_fork);
+		log_state(FORK, philo);
+		pthread_mutex_lock(philo->l_fork);
+		log_state(FORK, philo);
+	}
+}
+
+void	drop_forks(t_philo *philo)
+{
+	if (philo->id % 2 == 0)
+	{
+		pthread_mutex_unlock(philo->r_fork);
+		pthread_mutex_unlock(philo->l_fork);
+	}
+	else
+	{
+		pthread_mutex_unlock(philo->l_fork);
+		pthread_mutex_unlock(philo->r_fork);
+	}
+}
 
 void	eating(t_philo *philo)
 {
 	struct timeval	start;
 
-	if (philo->info->number_of_philo > 1)
+	grab_forks(philo);
+	if (philo->info->finish_sim)
 	{
-		pthread_mutex_lock(philo->l_fork);
-		log_state(FORK, philo);
+		drop_forks(philo);
+		return ;
 	}
-	pthread_mutex_lock(philo->r_fork);
-	log_state(FORK, philo);
-	while (philo->info->number_of_philo == 1)
-		usleep(1000);
-	pthread_mutex_lock(&philo->info->eat);
-	philo->times_eaten++;
-	pthread_mutex_unlock(&philo->info->eat);
 	log_state(EATING, philo);
 	pthread_mutex_lock(&philo->info->time);
 	gettimeofday(&start, NULL);
 	philo->current_time = (start.tv_sec * 1000000) + start.tv_usec;
 	pthread_mutex_unlock(&philo->info->time);
 	usleep(philo->info->time_to_eat * 1000);
-	pthread_mutex_unlock(philo->r_fork);
-	pthread_mutex_unlock(philo->l_fork);
-	usleep(100);
+	pthread_mutex_lock(&philo->info->eat);
+	philo->times_eaten++;
+	pthread_mutex_unlock(&philo->info->eat);
+	drop_forks(philo);
 }
 
 void	*philo_func(void *philo)
 {
+	t_philo	*philos;
+
+	philos = (t_philo *)philo;
+	pthread_mutex_lock(&philos->info->start);
+	pthread_mutex_unlock(&philos->info->start);
 	while (1)
 	{
-		eating((t_philo *)philo);
-		sleeping((t_philo *)philo);
+		if (philos->info->finish_sim)
+			return (philos);
+		if (philos->info->number_of_philo == 1)
+		{
+			log_state(FORK, philos);
+			return (philo);
+		}
+		eating(philos);
+		if (philos->info->finish_sim)
+			return (philos);
+		sleeping(philos);
 	}
-	return (NULL);
+	return (philo);
 }

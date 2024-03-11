@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/24 19:15:26 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/09 16:15:39 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/11 19:46:35 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,6 +31,7 @@ void	info_init(t_info *info, int argc, char **argv)
 	pthread_mutex_init(&info->write, NULL);
 	pthread_mutex_init(&info->time, NULL);
 	pthread_mutex_init(&info->eat, NULL);
+	pthread_mutex_init(&info->start, NULL);
 }
 
 void	philo_info_init(t_info *info, t_philo *philo,
@@ -82,14 +83,19 @@ t_philo	*philos_init(t_info *info, pthread_mutex_t *fork_mutex)
 
 void	*threads_init(t_philo *philos)
 {
-	int	i;
+	struct timeval	start;
+	int				i;
 
 	i = -1;
+	pthread_mutex_lock(&philos->info->start);
 	while (++i < philos[0].info->number_of_philo)
 	{
 		pthread_create(&philos[i].tid, NULL, &philo_func, &philos[i]);
-		usleep(1000);
+		// usleep(100);
 	}
+	pthread_mutex_unlock(&philos->info->start);
+	gettimeofday(&start, NULL);
+	philos->info->start_time = (start.tv_sec * 1000000) + start.tv_usec;
 	pthread_create(&philos[0].info->verify_death, NULL, &death_check, philos);
 	return (philos);
 }

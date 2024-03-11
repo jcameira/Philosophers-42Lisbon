@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/24 11:28:43 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/09 16:13:43 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/11 18:14:55 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,9 +45,7 @@ typedef struct s_philo
 	int				id;
 	pthread_t		tid;
 	pthread_mutex_t	*l_fork;
-	int				l_taken;
 	pthread_mutex_t	*r_fork;
-	int				r_taken;
 	int				times_eaten;
 	u_int64_t		current_time;
 	struct s_info	*info;
@@ -67,6 +65,7 @@ typedef struct s_info
 	pthread_mutex_t	write;
 	pthread_mutex_t	time;
 	pthread_mutex_t	eat;
+	pthread_mutex_t	start;
 }				t_info;
 
 int				argument_number_error(void);
@@ -84,6 +83,6 @@ u_int64_t		gettimems(u_int64_t start);
 void			log_state(int state, t_philo *philo);
 void			*philo_func(void *philo);
 void			*death_check(void *philo);
-void			terminate_sim(t_philo *philos);
+void			clean_sim(pthread_mutex_t *fork_mutex, t_philo *philos);
 
 #endif

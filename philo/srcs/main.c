@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/24 11:39:02 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/09 16:15:09 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/11 15:09:37 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,5 +33,7 @@ int	main(int argc, char **argv)
 	i = -1;
 	while (++i < info->number_of_philo)
 		pthread_join(philos[i].tid, NULL);
+	pthread_join(info->verify_death, NULL);
+	clean_sim(fork_mutex, philos);
 	return (0);
 }

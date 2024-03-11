@@ -2,7 +2,7 @@ NAME				=	philo
 
 CC					=	cc
 CFLAGS				=	-Wall -Wextra -Werror -I $(INCLUDES)
-SANITIZE			=	-g -fsanitize=address,undefined
+SANITIZE			=	-g -fsanitize=thread,undefined
 RANDOM_MALLOC		=	-Xlinker --wrap=malloc
 AR					=	ar rcs
 RM					=	rm -rf
