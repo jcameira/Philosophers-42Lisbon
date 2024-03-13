@@ -1,27 +1,28 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   memory_handle.c                                    :+:      :+:    :+:   */
+/*   inits.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/01 12:29:36 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/13 02:19:25 by jcameira         ###   ########.fr       */
+/*   Created: 2024/03/13 02:58:08 by jcameira          #+#    #+#             */
+/*   Updated: 2024/03/13 02:58:46 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <philosophers.h>
+#include <philosophers_bonus.h>
 
-void	clean_sim(pthread_mutex_t *fork_mutex, t_philo *philos)
+void	info_init(t_info *info, int argc, char **argv)
 {
-	int	i;
-
-	i = -1;
-	while (++i < philos->info->number_of_philo)
-		pthread_mutex_destroy(&fork_mutex[i]);
-	pthread_mutex_destroy(philos->info->monitor);
-	free(philos->info->monitor);
-	free(fork_mutex);
-	free(philos->info);
-	free(philos);
+	info->number_of_philo = ft_atoi(argv[1]);
+	info->time_to_die = ft_atoi(argv[2]);
+	info->time_to_eat = ft_atoi(argv[3]);
+	info->time_to_sleep = ft_atoi(argv[4]);
+	if (argc == 6)
+		info->times_must_eat = ft_atoi(argv[5]);
+	else
+		info->times_must_eat = -1;
+	info->philo_satisfied = 0;
+	info->finish_sim = 0;
 }
+

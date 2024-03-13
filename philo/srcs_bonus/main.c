@@ -1,27 +1,29 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   memory_handle.c                                    :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/01 12:29:36 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/13 02:19:25 by jcameira         ###   ########.fr       */
+/*   Created: 2024/03/13 02:48:54 by jcameira          #+#    #+#             */
+/*   Updated: 2024/03/13 02:59:24 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philosophers.h>
 
-void	clean_sim(pthread_mutex_t *fork_mutex, t_philo *philos)
+int	main(int argc, char **argv)
 {
-	int	i;
+	t_info	*info;
+	int		i;
 
-	i = -1;
-	while (++i < philos->info->number_of_philo)
-		pthread_mutex_destroy(&fork_mutex[i]);
-	pthread_mutex_destroy(philos->info->monitor);
-	free(philos->info->monitor);
-	free(fork_mutex);
-	free(philos->info);
-	free(philos);
+	if (argc < 5 || argc > 6)
+		return (argument_number_error());
+	if (!args_check(argv))
+		return (inv_argument_error());
+	info = malloc(sizeof(t_info));
+	if (!info)
+		return (1);
+	info_init(info, argc, argv);
+	return (0);
 }
