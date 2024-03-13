@@ -1,24 +1,29 @@
-NAME				=	philo
+NAME				=	philo/philo
+NAME_BONUS			=	philo_bonus/philo
 
 CC					=	cc
 CFLAGS				=	-Wall -Wextra -Werror -I $(INCLUDES)
+IFLAGS				=	-I $(INCLUDES)
+BONUS_IFLAGS		=	-I $(BONUS_INCLUDES)
 SANITIZE			=	-g -fsanitize=thread -pthread
 RANDOM_MALLOC		=	-Xlinker --wrap=malloc
 AR					=	ar rcs
 RM					=	rm -rf
 
-INCLUDES			=	includes/
+INCLUDES			=	philo/includes/
+BONUS_INCLUDE		=	philo_bonus/includes/
 DEFAULT_INCLUDES	=	-I /usr/local/includes
 
 SRCS				=	error_handling.c inits.c main.c memory_handle.c philo_utils.c philo.c sim_end_check.c #malloc.c
-SRCS_PATH			=	srcs/
+SRCS_PATH			=	philo/srcs/
 
 BONUS_SRCS			=	error_handling.c main.c philo_utils.c #malloc.c
-BONUS_SRCS_PATH		=	srcs_bonus/
+BONUS_SRCS_PATH		=	philo_bonus/srcs/
 
-OBJ_DIR				=	objects/
+OBJ_DIR				=	philo/objects/
 OBJS				=	$(SRCS:%.c=$(OBJ_DIR)%.o)
-BONUS_OBJS			=	$(BONUS_SRCS:%.c=$(OBJ_DIR)/%.o)
+BONUS_OBJ_DIR		=	philo_bonus/objects/
+BONUS_OBJS			=	$(BONUS_SRCS:%.c=$(BONUS_OBJ_DIR)%.o)
 ALL_OBJECTS			=	$(OBJ_DIR)*.o
 
 TOTAL_SRCS			=	$(words $(SRCS))
@@ -27,45 +32,56 @@ TOTAL_OBJS			=	$(words $(wildcard $(OBJ_DIR)*))
 FILES				=	0
 
 $(OBJ_DIR)%.o:		$(SRCS_PATH)%.c
-					@$(CC) $(CFLAGS) $(DEFAULT_INCLUDES) -c $< -o $@ && \
+					@$(CC) $(CFLAGS) $(IFLAGS) $(DEFAULT_INCLUDES) -c $< -o $@ && \
 					$(eval FILES=$(shell echo $$(($(FILES) + 1)))) \
 					$(call PRINT_PROGRESS,$(TOTAL_SRCS),$(GRN),$(YELLOW)Compiling$(DEFAULT) $@)
 
-$(OBJ_DIR)%.o:		$(BONUS_SRCS_PATH)%.c
-					@$(CC) $(CFLAGS) $(DEFAULT_INCLUDES) -c $< -o $@ && \
+$(BONUS_OBJ_DIR)%.o:$(BONUS_SRCS_PATH)%.c
+					@$(CC) $(CFLAGS) $(BONUS_IFLAGS) $(DEFAULT_INCLUDES) -c $< -o $@ && \
 					$(eval FILES=$(shell echo $$(($(FILES) + 1)))) \
 					$(call PRINT_PROGRESS,$(TOTAL_BONUS_SRCS),$(GRN),$(YELLOW)Compiling$(DEFAULT) $@)
 
 all:				$(NAME)
 
 $(NAME):			$(OBJ_DIR) $(OBJS)
-					@$(CC) $(CFLAGS) $(OBJS) -o $(NAME)
+					@$(CC) $(CFLAGS) $(IFLAGS) $(OBJS) -o $(NAME)
 					@echo "\033[2F\033[0K$(CYAN)$(NAME)$(DEFAULT) successfully created\033[E"
-					@if norminette | grep -q -v "OK!"; then \
-						norminette | grep -v OK!; echo "Norminette has$(RED) errors!$(DEFAULT)"; \
+					@if norminette philo | grep -q -v "OK!"; then \
+						norminette philo | grep -v OK!; echo "Norminette has$(RED) errors!$(DEFAULT)"; \
 					else \
 						echo "Norminette$(GRN) OK!!$(DEFAULT)"; \
 					fi
 
 sanitize:			$(OBJ_DIR) $(OBJS)
-					@$(CC) $(CFLAGS) $(SANITIZE) $(OBJS) -o $(NAME)
+					@$(CC) $(CFLAGS) $(IFLAGS) $(SANITIZE) $(OBJS) -o $(NAME)
 					@echo "\033[2F\033[0K$(CYAN)$(NAME)$(DEFAULT) successfully created\033[E"
 
 random_m:			$(OBJ_DIR) $(OBJS)
-					@$(CC) $(CFLAGS) $(SANITIZE) $(RANDOM_MALLOC) $(OBJS) -o $(NAME)
+					@$(CC) $(CFLAGS) $(IFLAGS) $(SANITIZE) $(RANDOM_MALLOC) $(OBJS) -o $(NAME)
 					@echo "\033[2F\033[0K$(CYAN)$(NAME)$(DEFAULT) successfully created\033[E"
 
-bonus:				$(OBJ_DIR) $(BONUS_OBJS)
-					@$(CC) $(CFLAGS) $(BONUS_OBJS) -o $(NAME)
+bonus:				$(BONUS_OBJ_DIR) $(BONUS_OBJS)
+					@$(CC) $(CFLAGS) $(BONUS_IFLAGS) $(BONUS_OBJS) -o $(BONUS_NAME)
 					@echo "\033[2F\033[0K$(CYAN)$(NAME)$(DEFAULT) successfully created\033[E"
-					@if norminette | grep -q -v "OK!"; then \
-						norminette | grep -v OK!; echo "Norminette has$(RED) errors!$(DEFAULT)"; \
+					@if norminette philo_bonus | grep -q -v "OK!"; then \
+						norminette philo_bonus | grep -v OK!; echo "Norminette has$(RED) errors!$(DEFAULT)"; \
 					else \
 						echo "Norminette$(GRN) OK!!$(DEFAULT)"; \
 					fi
 
+sanitize_b:			$(BONUS_OBJ_DIR) $(BONUS_OBJS)
+					@$(CC) $(CFLAGS) $(BONUS_IFLAGS) $(SANITIZE) $(OBJS) -o $(BONUS_NAME)
+					@echo "\033[2F\033[0K$(CYAN)$(NAME)$(DEFAULT) successfully created\033[E"
+
+random_m_b:			$(BONUS_OBJ_DIR) $(BONUS_OBJS)
+					@$(CC) $(CFLAGS) $(BONUS_IFLAGS) $(SANITIZE) $(RANDOM_MALLOC) $(OBJS) -o $(BONUS_NAME)
+					@echo "\033[2F\033[0K$(CYAN)$(NAME)$(DEFAULT) successfully created\033[E"
+
 $(OBJ_DIR):
 					@mkdir -p $(OBJ_DIR)
+
+$(BONUS_OBJ_DIR):
+					@mkdir -p $(BONUS_OBJ_DIR)
 
 clean:				
 					@$(foreach file,$(wildcard $(OBJ_DIR)*), \

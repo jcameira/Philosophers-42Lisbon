@@ -6,15 +6,16 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 02:48:54 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/13 02:59:24 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/13 15:56:38 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <philosophers.h>
+#include <philosophers_bonus.h>
 
 int	main(int argc, char **argv)
 {
 	t_info	*info;
+	t_philo	*philos;
 	int		i;
 
 	if (argc < 5 || argc > 6)
@@ -25,5 +26,7 @@ int	main(int argc, char **argv)
 	if (!info)
 		return (1);
 	info_init(info, argc, argv);
+	philos = philo_init(info);
+	processes_init(philos);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/24 19:15:26 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/13 02:38:35 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/13 15:49:59 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ void	philo_info_init(t_info *info, t_philo *philo,
 		philo->l_fork = &fork_mutex[philo_id - 2];
 	philo->r_fork = &fork_mutex[philo_id - 1];
 	philo->times_eaten = 0;
-	philo->last_meal = gettimems();
 	philo->info = info;
 }
 

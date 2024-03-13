@@ -6,11 +6,11 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 02:50:04 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/13 02:57:10 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/13 14:48:46 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include <philosophers.h>
+#include <philosophers_bonus.h>
 
 int	argument_number_error(void)
 {

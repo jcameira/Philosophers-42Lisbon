@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/24 11:28:43 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/13 02:54:07 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/13 15:52:16 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,17 +41,6 @@
 # define MSG_THINKING "%ld %d is thinking\n"
 # define MSG_DEAD "%ld %d died\n"
 
-typedef struct s_philo
-{
-	int				id;
-	pthread_t		tid;
-	pthread_mutex_t	*l_fork;
-	pthread_mutex_t	*r_fork;
-	int				times_eaten;
-	suseconds_t		last_meal;
-	struct s_info	*info;
-}				t_philo;
-
 typedef struct s_info
 {
 	suseconds_t		start_time;
@@ -65,6 +54,17 @@ typedef struct s_info
 	pthread_t		verify_death;
 	pthread_mutex_t	*monitor;
 }				t_info;
+
+typedef struct s_philo
+{
+	int				id;
+	pthread_t		tid;
+	pthread_mutex_t	*l_fork;
+	pthread_mutex_t	*r_fork;
+	int				times_eaten;
+	suseconds_t		last_meal;
+	t_info			*info;
+}				t_philo;
 
 // Error handling
 
@@ -87,10 +87,10 @@ void			clean_sim(pthread_mutex_t *fork_mutex, t_philo *philos);
 // Main routine
 
 void			*philo_func(void *philo);
+void			*single_philo(t_philo *philo);
 void			grab_forks(t_philo *philo);
-void			eating(t_philo *philo);
+void			eating_sleeping(t_philo *philo);
 void			drop_forks(t_philo *philo);
-void			sleeping(t_philo *philo);
 
 // Simulation termination checker
 

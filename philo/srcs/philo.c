@@ -6,18 +6,11 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/26 20:37:49 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/13 02:40:11 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/13 15:52:02 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philosophers.h>
-
-void	sleeping(t_philo *philo)
-{
-	log_state(SLEEPING, philo);
-	in_action(philo, philo->info->time_to_sleep);
-	log_state(THINKING, philo);
-}
 
 void	grab_forks(t_philo *philo)
 {
@@ -51,7 +44,7 @@ void	drop_forks(t_philo *philo)
 	}
 }
 
-void	eating(t_philo *philo)
+void	eating_sleeping(t_philo *philo)
 {
 	grab_forks(philo);
 	log_state(EATING, philo);
@@ -63,6 +56,15 @@ void	eating(t_philo *philo)
 	philo->times_eaten++;
 	pthread_mutex_unlock(philo->info->monitor);
 	drop_forks(philo);
+	log_state(SLEEPING, philo);
+	in_action(philo, philo->info->time_to_sleep);
+	log_state(THINKING, philo);
+}
+
+void	*single_philo(t_philo *philo)
+{
+	log_state(FORK, philo);
+	return (NULL);
 }
 
 void	*philo_func(void *philo)
@@ -72,15 +74,14 @@ void	*philo_func(void *philo)
 	philos = (t_philo *)philo;
 	pthread_mutex_lock(philos->info->monitor);
 	pthread_mutex_unlock(philos->info->monitor);
-	if (philos->info->number_of_philo == 1)
-	{
-		log_state(FORK, philos);
-		return (philo);
-	}
 	if (philos->id % 2 == 0)
 		usleep(philos->info->number_of_philo);
+	philos->last_meal = gettimems();
+	if (philos->info->number_of_philo == 1)
+		return (single_philo(philos));
 	while (1)
 	{
+		usleep(100);
 		pthread_mutex_lock(philos->info->monitor);
 		if (philos->info->finish_sim)
 		{
@@ -88,8 +89,7 @@ void	*philo_func(void *philo)
 			return (philos);
 		}
 		pthread_mutex_unlock(philos->info->monitor);
-		eating(philos);
-		sleeping(philos);
+		eating_sleeping(philos);
 	}
 	return (NULL);
 }
