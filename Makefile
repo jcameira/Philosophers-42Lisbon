@@ -70,11 +70,11 @@ bonus:				$(BONUS_OBJ_DIR) $(BONUS_OBJS)
 					fi
 
 sanitize_b:			$(BONUS_OBJ_DIR) $(BONUS_OBJS)
-					@$(CC) $(CFLAGS) $(BONUS_IFLAGS) $(SANITIZE) $(OBJS) -o $(NAME_BONUS)
+					@$(CC) $(CFLAGS) $(BONUS_IFLAGS) $(SANITIZE) $(BONUS_OBJS) -o $(NAME_BONUS)
 					@echo "\033[2F\033[0K$(CYAN)$(NAME)$(DEFAULT) successfully created\033[E"
 
 random_m_b:			$(BONUS_OBJ_DIR) $(BONUS_OBJS)
-					@$(CC) $(CFLAGS) $(BONUS_IFLAGS) $(SANITIZE) $(RANDOM_MALLOC) $(OBJS) -o $(NAME_BONUS)
+					@$(CC) $(CFLAGS) $(BONUS_IFLAGS) $(SANITIZE) $(RANDOM_MALLOC) $(BONUS_OBJS) -o $(NAME_BONUS)
 					@echo "\033[2F\033[0K$(CYAN)$(NAME)$(DEFAULT) successfully created\033[E"
 
 $(OBJ_DIR):

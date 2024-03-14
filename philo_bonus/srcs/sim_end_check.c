@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 03:53:33 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/14 05:03:01 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/14 21:20:53 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ void	*meals_func(void *philo)
 
 	philos = (t_philo *)philo;
 	satisfied = -1;
+	sem_wait(philos->info->sem_eat);
 	while (++satisfied < philos->info->number_of_philo)
 		sem_wait(philos->info->sem_eat);
 	sem_wait(philos->info->sem_print);

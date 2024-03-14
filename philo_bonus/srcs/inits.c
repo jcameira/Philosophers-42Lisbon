@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 02:58:08 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/14 05:23:14 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/14 21:21:43 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -71,6 +71,7 @@ void	info_init(t_info *info, int argc, char **argv)
 	info->finish_sim = 0;
 	sem_unlink(SEM_FORKS);
 	sem_unlink(SEM_PRINT);
+	sem_unlink(SEM_EAT);
 	sem_unlink(SEM_DEATH);
 	info->sem_forks = sem_open(SEM_FORKS, O_CREAT | O_EXCL, S_IRWXU,
 			info->number_of_philo);
