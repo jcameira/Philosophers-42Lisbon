@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 02:56:42 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/13 02:57:02 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/14 04:04:40 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,4 +36,49 @@ int	args_check(char **argv)
 		}
 	}
 	return (1);
+}
+
+int	ft_atoi(const char *str)
+{
+	int			i;
+	int			neg;
+	long int	num;
+
+	i = 0;
+	neg = 1;
+	num = 0;
+	while ((str[i] >= 9 && str[i] <= 13) || str[i] == 32)
+		i++;
+	if (str[i] == 43 || str[i] == 45)
+	{
+		if (str[i] == 45)
+			neg = -1;
+		i++;
+	}
+	while (str[i] >= 48 && str[i] <= 57)
+	{
+		num = num * 10 + (str[i] - 48);
+		i++;
+	}
+	return (num * neg);
+}
+
+void	log_state(int state, t_philo *philo)
+{
+	const char	*messages[5] = {MSG_FORK, MSG_EATING, MSG_SLEEPING,
+		MSG_THINKING, MSG_DEAD};
+
+	sem_wait(philo->info->sem_print);
+	if (!philo->info->finish_sim || state == DEAD)
+		printf(messages[state], gettimems()
+			- philo->info->start_time, philo->id);
+	sem_post(philo->info->sem_print);
+}
+
+suseconds_t	gettimems(void)
+{
+	struct timeval	tv;
+
+	gettimeofday(&tv, NULL);
+	return ((tv.tv_sec * 1000) + (tv.tv_usec / 1000));
 }

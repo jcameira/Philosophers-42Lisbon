@@ -1,31 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   memory_handle.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2024/03/13 02:48:54 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/14 03:38:05 by jcameira         ###   ########.fr       */
+/*   Created: 2024/03/14 04:56:10 by jcameira          #+#    #+#             */
+/*   Updated: 2024/03/14 04:58:58 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philosophers_bonus.h>
 
-int	main(int argc, char **argv)
+void	kill_philos(t_philo *philos)
 {
-	t_info	*info;
-	t_philo	*philos;
+	int	i;
 
-	if (argc < 5 || argc > 6)
-		return (argument_number_error());
-	if (!args_check(argv))
-		return (inv_argument_error());
-	info = malloc(sizeof(t_info));
-	if (!info)
-		return (1);
-	info_init(info, argc, argv);
-	philos = philo_init(info);
-	processes_init(philos);
-	return (0);
+	i = -1;
+	while (++i < philos->info->number_of_philo)
+		kill(philos[i].pid, SIGINT);
 }

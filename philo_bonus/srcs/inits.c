@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 02:58:08 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/13 16:00:03 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/14 05:23:14 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,13 +15,28 @@
 void	processes_init(t_philo *philos)
 {
 	int	i;
+	int	status;
 
+	if (philos->info->times_must_eat > -1)
+		pthread_create(&philos->info->verify_satisfied, NULL, meals_func,
+			philos);
 	i = -1;
+	philos->info->start_time = gettimems();
 	while (++i < philos->info->number_of_philo)
 	{
-		philos[i].pid = fork()
-		if ()
+		philos[i].last_meal = gettimems();
+		philos[i].pid = fork();
+		if (philos[i].pid == 0)
+		{
+			pthread_create(&philos[i].monitor, NULL, monitor_func, &philos[i]);
+			pthread_detach(philos[i].monitor);
+			philo_func(&philos[i]);
+		}
+		usleep(100);
 	}
+	waitpid(ANY, &status, 0);
+	if (WIFEXITED(status))
+		kill_philos(philos);
 }
 
 t_philo	*philo_init(t_info *info)
@@ -54,8 +69,12 @@ void	info_init(t_info *info, int argc, char **argv)
 		info->times_must_eat = -1;
 	info->philo_satisfied = 0;
 	info->finish_sim = 0;
-	info->sem_forks = sem_open(SEM_FORKS, O_CREAT, S_IRWXU, info->number_of_philo);
-	info->sem_print = sem_open(SEM_PRINT, O_CREAT, S_IRWXU, 1);
-	info->sem_eat = sem_open(SEM_EAT, O_CREAT, S_IRWXU, 1);
-	info->sem_death = sem_open(SEM_DEATH, O_CREAT, S_IRWXU, 1);
+	sem_unlink(SEM_FORKS);
+	sem_unlink(SEM_PRINT);
+	sem_unlink(SEM_DEATH);
+	info->sem_forks = sem_open(SEM_FORKS, O_CREAT | O_EXCL, S_IRWXU,
+			info->number_of_philo);
+	info->sem_print = sem_open(SEM_PRINT, O_CREAT | O_EXCL, S_IRWXU, 1);
+	info->sem_eat = sem_open(SEM_EAT, O_CREAT | O_EXCL, S_IRWXU, 1);
+	info->sem_death = sem_open(SEM_DEATH, O_CREAT | O_EXCL, S_IRWXU, 1);
 }

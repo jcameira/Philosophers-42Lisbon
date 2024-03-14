@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/26 20:37:49 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/13 15:52:02 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/14 04:40:54 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,10 +52,10 @@ void	eating_sleeping(t_philo *philo)
 	philo->last_meal = gettimems();
 	pthread_mutex_unlock(philo->info->monitor);
 	in_action(philo, philo->info->time_to_eat);
+	drop_forks(philo);
 	pthread_mutex_lock(philo->info->monitor);
 	philo->times_eaten++;
 	pthread_mutex_unlock(philo->info->monitor);
-	drop_forks(philo);
 	log_state(SLEEPING, philo);
 	in_action(philo, philo->info->time_to_sleep);
 	log_state(THINKING, philo);
@@ -76,9 +76,9 @@ void	*philo_func(void *philo)
 	pthread_mutex_unlock(philos->info->monitor);
 	if (philos->id % 2 == 0)
 		usleep(philos->info->number_of_philo);
-	philos->last_meal = gettimems();
 	if (philos->info->number_of_philo == 1)
 		return (single_philo(philos));
+	philos->last_meal = gettimems();
 	while (1)
 	{
 		usleep(100);

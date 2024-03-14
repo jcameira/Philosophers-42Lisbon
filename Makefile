@@ -2,7 +2,7 @@ NAME				=	philo/philo
 NAME_BONUS			=	philo_bonus/philo
 
 CC					=	cc
-CFLAGS				=	-Wall -Wextra -Werror -I $(INCLUDES)
+CFLAGS				=	-Wall -Wextra -Werror
 IFLAGS				=	-I $(INCLUDES)
 BONUS_IFLAGS		=	-I $(BONUS_INCLUDES)
 SANITIZE			=	-g -fsanitize=thread -pthread
@@ -11,13 +11,13 @@ AR					=	ar rcs
 RM					=	rm -rf
 
 INCLUDES			=	philo/includes/
-BONUS_INCLUDE		=	philo_bonus/includes/
+BONUS_INCLUDES		=	philo_bonus/includes/
 DEFAULT_INCLUDES	=	-I /usr/local/includes
 
 SRCS				=	error_handling.c inits.c main.c memory_handle.c philo_utils.c philo.c sim_end_check.c #malloc.c
 SRCS_PATH			=	philo/srcs/
 
-BONUS_SRCS			=	error_handling.c main.c philo_utils.c #malloc.c
+BONUS_SRCS			=	error_handling.c inits.c main.c memory_handle.c philo_utils.c philo.c sim_end_check.c #malloc.c
 BONUS_SRCS_PATH		=	philo_bonus/srcs/
 
 OBJ_DIR				=	philo/objects/
@@ -61,7 +61,7 @@ random_m:			$(OBJ_DIR) $(OBJS)
 					@echo "\033[2F\033[0K$(CYAN)$(NAME)$(DEFAULT) successfully created\033[E"
 
 bonus:				$(BONUS_OBJ_DIR) $(BONUS_OBJS)
-					@$(CC) $(CFLAGS) $(BONUS_IFLAGS) $(BONUS_OBJS) -o $(BONUS_NAME)
+					@$(CC) $(CFLAGS) $(BONUS_IFLAGS) $(BONUS_OBJS) -o $(NAME_BONUS)
 					@echo "\033[2F\033[0K$(CYAN)$(NAME)$(DEFAULT) successfully created\033[E"
 					@if norminette philo_bonus | grep -q -v "OK!"; then \
 						norminette philo_bonus | grep -v OK!; echo "Norminette has$(RED) errors!$(DEFAULT)"; \
@@ -70,11 +70,11 @@ bonus:				$(BONUS_OBJ_DIR) $(BONUS_OBJS)
 					fi
 
 sanitize_b:			$(BONUS_OBJ_DIR) $(BONUS_OBJS)
-					@$(CC) $(CFLAGS) $(BONUS_IFLAGS) $(SANITIZE) $(OBJS) -o $(BONUS_NAME)
+					@$(CC) $(CFLAGS) $(BONUS_IFLAGS) $(SANITIZE) $(OBJS) -o $(NAME_BONUS)
 					@echo "\033[2F\033[0K$(CYAN)$(NAME)$(DEFAULT) successfully created\033[E"
 
 random_m_b:			$(BONUS_OBJ_DIR) $(BONUS_OBJS)
-					@$(CC) $(CFLAGS) $(BONUS_IFLAGS) $(SANITIZE) $(RANDOM_MALLOC) $(OBJS) -o $(BONUS_NAME)
+					@$(CC) $(CFLAGS) $(BONUS_IFLAGS) $(SANITIZE) $(RANDOM_MALLOC) $(OBJS) -o $(NAME_BONUS)
 					@echo "\033[2F\033[0K$(CYAN)$(NAME)$(DEFAULT) successfully created\033[E"
 
 $(OBJ_DIR):

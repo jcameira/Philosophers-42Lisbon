@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 02:50:52 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/13 15:57:02 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/14 05:17:42 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,8 @@
 # define THINKING 3
 # define DEAD 4
 
+# define ANY -1
+
 # define MSG_FORK "%ld %d has taken a fork\n"
 # define MSG_EATING "%ld %d is eating\n"
 # define MSG_SLEEPING "%ld %d is sleeping\n"
@@ -60,12 +62,14 @@ typedef struct s_info
 	sem_t		*sem_print;
 	sem_t		*sem_eat;
 	sem_t		*sem_death;
+	pthread_t	verify_satisfied;
 }				t_info;
 
 typedef struct s_philo
 {
 	int			id;
 	pid_t		pid;
+	pthread_t	monitor;
 	int			times_eaten;
 	suseconds_t	last_meal;
 	t_info		*info;
@@ -73,17 +77,36 @@ typedef struct s_philo
 
 // Error handling
 
-int		argument_number_error(void);
-int		inv_argument_error(void);
+int			argument_number_error(void);
+int			inv_argument_error(void);
 
 // Data initialization
 
-void	info_init(t_info *info, int argc, char **argv);
-t_philo	*philo_init(t_info *info);
-void	processes_init(t_philo *philos);
+void		info_init(t_info *info, int argc, char **argv);
+t_philo		*philo_init(t_info *info);
+void		processes_init(t_philo *philos);
+
+// Cleanup
+
+void		kill_philos(t_philo *philos);
+
+// Main routine
+
+void		philo_func(t_philo *philo);
+void		grab_forks(t_philo *philo);
+void		eating_sleeping(t_philo *philo);
+void		drop_forks(t_philo *philo);
+
+// Simulation termination checker
+
+void		*meals_func(void *philo);
+void		*monitor_func(void *philo);
 
 // Utility functions
 
-int		args_check(char **argv);
+int			args_check(char **argv);
+int			ft_atoi(const char *str);
+void		log_state(int state, t_philo *philo);
+suseconds_t	gettimems(void);
 
 #endif
