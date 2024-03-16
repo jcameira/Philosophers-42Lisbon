@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 02:58:08 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/14 21:21:43 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/16 22:08:58 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,11 @@ void	processes_init(t_philo *philos)
 	int	status;
 
 	if (philos->info->times_must_eat > -1)
+	{
 		pthread_create(&philos->info->verify_satisfied, NULL, meals_func,
 			philos);
+		pthread_detach(philos->info->verify_satisfied);
+	}
 	i = -1;
 	philos->info->start_time = gettimems();
 	while (++i < philos->info->number_of_philo)

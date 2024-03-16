@@ -1,11 +1,11 @@
 NAME				=	philo/philo
-NAME_BONUS			=	philo_bonus/philo
+NAME_BONUS			=	philo_bonus/philo_bonus
 
 CC					=	cc
-CFLAGS				=	-Wall -Wextra -Werror
+CFLAGS				=	-Wall -Wextra -Werror -g
 IFLAGS				=	-I $(INCLUDES)
 BONUS_IFLAGS		=	-I $(BONUS_INCLUDES)
-SANITIZE			=	-g -fsanitize=thread -pthread
+SANITIZE			=	-g -fsanitize=address
 RANDOM_MALLOC		=	-Xlinker --wrap=malloc
 AR					=	ar rcs
 RM					=	rm -rf
@@ -29,6 +29,7 @@ ALL_OBJECTS			=	$(OBJ_DIR)*.o
 TOTAL_SRCS			=	$(words $(SRCS))
 TOTAL_BONUS_SRCS	=	$(words $(BONUS_SRCS))
 TOTAL_OBJS			=	$(words $(wildcard $(OBJ_DIR)*))
+TOTAL_BONUS_OBJS	=	$(words $(wildcard $(BONUS_OBJ_DIR)*))
 FILES				=	0
 
 $(OBJ_DIR)%.o:		$(SRCS_PATH)%.c
@@ -44,7 +45,7 @@ $(BONUS_OBJ_DIR)%.o:$(BONUS_SRCS_PATH)%.c
 all:				$(NAME)
 
 $(NAME):			$(OBJ_DIR) $(OBJS)
-					@$(CC) $(CFLAGS) $(IFLAGS) $(OBJS) -o $(NAME)
+					@$(CC) $(CFLAGS) $(IFLAGS) $(OBJS) -o $@
 					@echo "\033[2F\033[0K$(CYAN)$(NAME)$(DEFAULT) successfully created\033[E"
 					@if norminette philo | grep -q -v "OK!"; then \
 						norminette philo | grep -v OK!; echo "Norminette has$(RED) errors!$(DEFAULT)"; \
@@ -60,9 +61,11 @@ random_m:			$(OBJ_DIR) $(OBJS)
 					@$(CC) $(CFLAGS) $(IFLAGS) $(SANITIZE) $(RANDOM_MALLOC) $(OBJS) -o $(NAME)
 					@echo "\033[2F\033[0K$(CYAN)$(NAME)$(DEFAULT) successfully created\033[E"
 
-bonus:				$(BONUS_OBJ_DIR) $(BONUS_OBJS)
-					@$(CC) $(CFLAGS) $(BONUS_IFLAGS) $(BONUS_OBJS) -o $(NAME_BONUS)
-					@echo "\033[2F\033[0K$(CYAN)$(NAME)$(DEFAULT) successfully created\033[E"
+bonus:				$(NAME_BONUS)
+
+$(NAME_BONUS):		$(BONUS_OBJ_DIR) $(BONUS_OBJS)
+					@$(CC) $(CFLAGS) $(BONUS_IFLAGS) $(BONUS_OBJS) -o $@
+					@echo "\033[2F\033[0K$(CYAN)$(NAME_BONUS)$(DEFAULT) successfully created\033[E"
 					@if norminette philo_bonus | grep -q -v "OK!"; then \
 						norminette philo_bonus | grep -v OK!; echo "Norminette has$(RED) errors!$(DEFAULT)"; \
 					else \
@@ -71,17 +74,17 @@ bonus:				$(BONUS_OBJ_DIR) $(BONUS_OBJS)
 
 sanitize_b:			$(BONUS_OBJ_DIR) $(BONUS_OBJS)
 					@$(CC) $(CFLAGS) $(BONUS_IFLAGS) $(SANITIZE) $(BONUS_OBJS) -o $(NAME_BONUS)
-					@echo "\033[2F\033[0K$(CYAN)$(NAME)$(DEFAULT) successfully created\033[E"
+					@echo "\033[2F\033[0K$(CYAN)$(NAME_BONUS)$(DEFAULT) successfully created\033[E"
 
 random_m_b:			$(BONUS_OBJ_DIR) $(BONUS_OBJS)
 					@$(CC) $(CFLAGS) $(BONUS_IFLAGS) $(SANITIZE) $(RANDOM_MALLOC) $(BONUS_OBJS) -o $(NAME_BONUS)
-					@echo "\033[2F\033[0K$(CYAN)$(NAME)$(DEFAULT) successfully created\033[E"
+					@echo "\033[2F\033[0K$(CYAN)$(NAME_BONUS)$(DEFAULT) successfully created\033[E"
 
 $(OBJ_DIR):
-					@mkdir -p $(OBJ_DIR)
+					@mkdir -p $@
 
 $(BONUS_OBJ_DIR):
-					@mkdir -p $(BONUS_OBJ_DIR)
+					@mkdir -p $@
 
 clean:				
 					@$(foreach file,$(wildcard $(OBJ_DIR)*), \
@@ -89,17 +92,35 @@ clean:
 						$(call PRINT_PROGRESS,$(TOTAL_OBJS),$(RED),$(YELLOW)Deleting$(DEFAULT) $(file)); \
 						$(RM) $(file); \
 					)
-					@$(RM) $(OBJ_DIR)
-					@echo "\033[2F\033[0K$(PURPLE)$(OBJ_DIR)$(DEFAULT) deleted\033[E"
+					@if [ -d "$(OBJ_DIR)" ]; then \
+						$(RM) $(OBJ_DIR); \
+						echo "\033[2F\033[0K$(PURPLE)$(OBJ_DIR)$(DEFAULT) deleted\033[E"; \
+					fi
+					$(eval FILES=0)
+					@$(foreach file,$(wildcard $(BONUS_OBJ_DIR)*), \
+						$(eval FILES=$(shell echo $$(($(FILES) + 1)))) \
+						$(call PRINT_PROGRESS,$(TOTAL_BONUS_OBJS),$(RED),$(YELLOW)Deleting$(DEFAULT) $(file)); \
+						$(RM) $(file); \
+					)
+					@if [ -d "$(BONUS_OBJ_DIR)" ]; then \
+						echo "\033[2F\033[0K$(PURPLE)$(BONUS_OBJ_DIR)$(DEFAULT) deleted\033[E"; \
+						$(RM) $(BONUS_OBJ_DIR); \
+					fi
 					$(eval FILES=0)
 
 fclean:				clean
-					@$(RM) $(NAME)
-					@echo "$(PURPLE)$(NAME)$(DEFAULT) deleted"
+					@if [ -e "$(NAME)" ]; then \
+						$(RM) $(NAME); \
+						echo "$(PURPLE)$(NAME)$(DEFAULT) deleted"; \
+					fi
+					@if [ -e "$(NAME_BONUS)" ]; then \
+						$(RM) $(NAME_BONUS); \
+						echo "$(PURPLE)$(NAME_BONUS)$(DEFAULT) deleted"; \
+					fi
 
 re:					fclean all
 
-.PHONY:				all sanitize random_m clean fclean re
+.PHONY:				all sanitize random_m clean fclean re bonus sanitize_b random_m_b
 
 define PRINT_PROGRESS
     if [ "$(FILES)" -eq "1" ]; then \

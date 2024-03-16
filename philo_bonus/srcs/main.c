@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 02:48:54 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/14 21:16:13 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/16 21:49:40 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,5 +27,6 @@ int	main(int argc, char **argv)
 	info_init(info, argc, argv);
 	philos = philo_init(info);
 	processes_init(philos);
+	clean_sim(philos);
 	return (0);
 }

@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 02:50:52 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/14 05:17:42 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/16 21:50:02 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,6 +29,7 @@
 # define ARG_NBR_ERROR "Wrong number of arguments.\n"
 # define INV_ARG_ERROR "Invalid arguments.\n"
 
+# define SEM_START "/start"
 # define SEM_FORKS "/forks"
 # define SEM_PRINT "/print"
 # define SEM_EAT "/eat"
@@ -58,6 +59,7 @@ typedef struct s_info
 	int			times_must_eat;
 	int			philo_satisfied;
 	int			finish_sim;
+	sem_t		*sem_start;
 	sem_t		*sem_forks;
 	sem_t		*sem_print;
 	sem_t		*sem_eat;
@@ -89,6 +91,7 @@ void		processes_init(t_philo *philos);
 // Cleanup
 
 void		kill_philos(t_philo *philos);
+void		clean_sim(t_philo *philos);
 
 // Main routine
 
@@ -107,6 +110,7 @@ void		*monitor_func(void *philo);
 int			args_check(char **argv);
 int			ft_atoi(const char *str);
 void		log_state(int state, t_philo *philo);
+void		in_action(suseconds_t time_to_wait);
 suseconds_t	gettimems(void);
 
 #endif
