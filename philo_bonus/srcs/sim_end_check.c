@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 03:53:33 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/16 21:53:20 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/18 20:11:25 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,10 @@ void	*monitor_func(void *philo)
 		{
 			log_state(DEAD, philos);
 			sem_wait(philos->info->sem_print);
-			clean_sim(philos);
-			exit(0);
+			philos->info->finish_sim = 1;
+			sem_post(philos->info->sem_death);
+			//clean_sim(philos);
+			return (NULL);
 		}
 		sem_post(philos->info->sem_death);
 	}

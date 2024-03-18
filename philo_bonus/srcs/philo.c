@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 03:52:40 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/16 19:24:13 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/18 20:04:49 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -53,6 +53,14 @@ void	philo_func(t_philo *philo)
 	while (1)
 	{
 		usleep(100);
+		sem_wait(philos->info->sem_death);
+		if (philos->info->finish_sim)
+		{
+			sem_post(philos->info->sem_death);
+			clean_sim(philo);
+			exit (0);
+		}
+		sem_post(philos->info->sem_death);
 		eating_sleeping(philos);
 	}
 }
