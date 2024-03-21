@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 02:58:08 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/21 02:06:25 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/21 16:20:53 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,6 +59,8 @@ t_philo	*philo_init(t_info *info)
 		philos[i].id = i + 1;
 		philos[i].times_eaten = 0;
 		philos[i].info = info;
+		philos[i].monitor_mutex = malloc(sizeof(pthread_mutex_t));
+		pthread_mutex_init(philos[i].monitor_mutex, NULL);
 	}
 	return (philos);
 }

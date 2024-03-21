@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 02:50:52 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/21 02:05:33 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/21 13:41:17 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,12 +69,13 @@ typedef struct s_info
 
 typedef struct s_philo
 {
-	int			id;
-	pid_t		pid;
-	pthread_t	monitor;
-	int			times_eaten;
-	suseconds_t	last_meal;
-	t_info		*info;
+	int				id;
+	pid_t			pid;
+	pthread_t		monitor;
+	pthread_mutex_t	*monitor_mutex;
+	int				times_eaten;
+	suseconds_t		last_meal;
+	t_info			*info;
 }				t_philo;
 
 // Error handling

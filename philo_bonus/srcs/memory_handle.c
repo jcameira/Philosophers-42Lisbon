@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 04:56:10 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/21 01:56:15 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/21 16:37:17 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -23,10 +23,15 @@ void	kill_philos(t_philo *philos)
 
 void	clean_sim(t_philo *philos)
 {
+	int	i;
+
 	sem_close(philos->info->sem_forks);
 	sem_close(philos->info->sem_print);
 	sem_close(philos->info->sem_eat);
 	sem_close(philos->info->sem_death);
+	i = -1;
+	while (++i < philos->info->number_of_philo)
+		free(philos[i].monitor_mutex);
 	free(philos->info);
 	free(philos);
 }

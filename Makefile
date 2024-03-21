@@ -5,7 +5,7 @@ CC					=	cc
 CFLAGS				=	-Wall -Wextra -Werror -g
 IFLAGS				=	-I $(INCLUDES)
 BONUS_IFLAGS		=	-I $(BONUS_INCLUDES)
-SANITIZE			=	-g -fsanitize=address
+SANITIZE			=	-g -fsanitize=thread
 RANDOM_MALLOC		=	-Xlinker --wrap=malloc
 AR					=	ar rcs
 RM					=	rm -rf
