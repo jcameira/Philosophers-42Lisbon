@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 02:48:54 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/16 21:49:40 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/21 02:00:46 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,6 +16,7 @@ int	main(int argc, char **argv)
 {
 	t_info	*info;
 	t_philo	*philos;
+	int		i;
 
 	if (argc < 5 || argc > 6)
 		return (argument_number_error());
@@ -27,6 +28,10 @@ int	main(int argc, char **argv)
 	info_init(info, argc, argv);
 	philos = philo_init(info);
 	processes_init(philos);
+	i = -1;
+	while (++i < info->number_of_philo)
+		waitpid(philos[i].pid, NULL, 0);
+	usleep(100);
 	clean_sim(philos);
 	return (0);
 }

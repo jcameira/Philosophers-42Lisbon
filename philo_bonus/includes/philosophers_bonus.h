@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 02:50:52 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/16 21:50:02 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/21 02:05:33 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,13 +58,13 @@ typedef struct s_info
 	int			time_to_sleep;
 	int			times_must_eat;
 	int			philo_satisfied;
-	int			finish_sim;
 	sem_t		*sem_start;
 	sem_t		*sem_forks;
 	sem_t		*sem_print;
 	sem_t		*sem_eat;
 	sem_t		*sem_death;
 	pthread_t	verify_satisfied;
+	pthread_t	kill_philos;
 }				t_info;
 
 typedef struct s_philo
@@ -90,6 +90,7 @@ void		processes_init(t_philo *philos);
 
 // Cleanup
 
+void		end_simulation(t_philo *philos);
 void		kill_philos(t_philo *philos);
 void		clean_sim(t_philo *philos);
 
@@ -102,6 +103,7 @@ void		drop_forks(t_philo *philo);
 
 // Simulation termination checker
 
+void		*kill_func(void *philo);
 void		*meals_func(void *philo);
 void		*monitor_func(void *philo);
 

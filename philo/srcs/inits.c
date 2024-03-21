@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/24 19:15:26 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/14 03:27:35 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/21 01:33:03 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,10 +78,10 @@ void	*threads_init(t_philo *philos)
 
 	i = -1;
 	pthread_mutex_lock(philos->info->monitor);
+	philos->info->start_time = gettimems();
 	while (++i < philos->info->number_of_philo)
 		pthread_create(&philos[i].tid, NULL, &philo_func, &philos[i]);
 	pthread_create(&philos->info->verify_death, NULL, &death_check, philos);
 	pthread_mutex_unlock(philos->info->monitor);
-	philos->info->start_time = gettimems();
 	return (philos);
 }

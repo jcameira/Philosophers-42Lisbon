@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 02:56:42 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/16 15:23:16 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/21 02:07:21 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -69,9 +69,7 @@ void	log_state(int state, t_philo *philo)
 		MSG_THINKING, MSG_DEAD};
 
 	sem_wait(philo->info->sem_print);
-	if (!philo->info->finish_sim || state == DEAD)
-		printf(messages[state], gettimems()
-			- philo->info->start_time, philo->id);
+	printf(messages[state], gettimems() - philo->info->start_time, philo->id);
 	sem_post(philo->info->sem_print);
 }
 

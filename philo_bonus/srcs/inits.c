@@ -6,16 +6,21 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 02:58:08 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/16 22:08:58 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/21 02:06:25 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philosophers_bonus.h>
 
+void	end_simulation(t_philo *philos)
+{
+	pthread_create(&philos->info->kill_philos, NULL, kill_func, philos);
+	pthread_detach(philos->info->kill_philos);
+}
+
 void	processes_init(t_philo *philos)
 {
 	int	i;
-	int	status;
 
 	if (philos->info->times_must_eat > -1)
 	{
@@ -37,9 +42,7 @@ void	processes_init(t_philo *philos)
 		}
 		usleep(100);
 	}
-	waitpid(ANY, &status, 0);
-	if (WIFEXITED(status))
-		kill_philos(philos);
+	end_simulation(philos);
 }
 
 t_philo	*philo_init(t_info *info)
@@ -71,7 +74,6 @@ void	info_init(t_info *info, int argc, char **argv)
 	else
 		info->times_must_eat = -1;
 	info->philo_satisfied = 0;
-	info->finish_sim = 0;
 	sem_unlink(SEM_FORKS);
 	sem_unlink(SEM_PRINT);
 	sem_unlink(SEM_EAT);
@@ -80,5 +82,7 @@ void	info_init(t_info *info, int argc, char **argv)
 			info->number_of_philo);
 	info->sem_print = sem_open(SEM_PRINT, O_CREAT | O_EXCL, S_IRWXU, 1);
 	info->sem_eat = sem_open(SEM_EAT, O_CREAT | O_EXCL, S_IRWXU, 1);
+	sem_wait(info->sem_eat);
 	info->sem_death = sem_open(SEM_DEATH, O_CREAT | O_EXCL, S_IRWXU, 1);
+	sem_wait(info->sem_death);
 }
