@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 02:58:08 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/23 14:25:31 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/23 19:49:13 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,8 @@ void	processes_init(t_philo *philos)
 	}
 	printf(SIM_START);
 	philos->info->start_time = gettimems();
-	sem_post(philos->info->sem_start);
 	checking_threads(philos);
+	sem_post(philos->info->sem_start);
 }
 
 t_philo	*philo_init(t_info *info)

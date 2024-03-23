@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 02:48:54 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/23 13:59:02 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/23 20:17:37 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,7 +31,7 @@ int	main(int argc, char **argv)
 	i = -1;
 	while (++i < info->number_of_philo)
 		waitpid(philos[i].pid, NULL, 0);
-	usleep(100);
+	usleep(1000);
 	printf(SIM_END);
 	clean_sim(philos);
 	return (0);
