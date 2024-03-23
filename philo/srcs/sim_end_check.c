@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 02:02:10 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/13 02:38:28 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/23 13:43:42 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ void	eat_check(t_philo *philos)
 	pthread_mutex_lock(philos->info->monitor);
 	philos->info->finish_sim = 1;
 	pthread_mutex_unlock(philos->info->monitor);
+	log_state(SATISFIED, philos);
 }
 
 void	*death_check(void *philo)

@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/02/24 18:58:43 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/14 03:57:25 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/23 13:44:56 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -73,13 +73,15 @@ suseconds_t	gettimems(void)
 
 void	log_state(int state, t_philo *philo)
 {
-	const char	*messages[5] = {MSG_FORK, MSG_EATING, MSG_SLEEPING,
-		MSG_THINKING, MSG_DEAD};
+	const char	*messages[6] = {MSG_FORK, MSG_EATING, MSG_SLEEPING,
+		MSG_THINKING, MSG_SATISFIED, MSG_DEAD};
 
 	pthread_mutex_lock(philo->info->monitor);
 	if (!philo->info->finish_sim || state == DEAD)
 		printf(messages[state], gettimems()
 			- philo->info->start_time, philo->id);
+	else if (state == SATISFIED)
+		printf(messages[state], gettimems() - philo->info->start_time);
 	pthread_mutex_unlock(philo->info->monitor);
 }
 

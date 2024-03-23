@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 02:50:52 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/21 13:41:17 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/23 14:10:34 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,15 +39,29 @@
 # define EATING 1
 # define SLEEPING 2
 # define THINKING 3
-# define DEAD 4
+# define SATISFIED 4
+# define DEAD 5
 
 # define ANY -1
 
-# define MSG_FORK "%ld %d has taken a fork\n"
-# define MSG_EATING "%ld %d is eating\n"
-# define MSG_SLEEPING "%ld %d is sleeping\n"
-# define MSG_THINKING "%ld %d is thinking\n"
-# define MSG_DEAD "%ld %d died\n"
+# define SIM_START "---------------------------------------\n\
+|   \033[35mTIME\033[0m   | \033[35mPHILO\033[0m |      \033[35mEVENT\033[0m       |\n\
+---------------------------------------\n"
+
+# define SIM_END "---------------------------------------\n"
+
+# define MSG_FORK "|\033[36m%10ld\033[0m|%4d   | \
+\033[33mhas taken a fork\033[0m |\n"
+# define MSG_EATING "|\033[36m%10ld\033[0m|%4d   |    \
+\033[33mis eating\033[0m     |\n"
+# define MSG_SLEEPING "|\033[36m%10ld\033[0m|%4d   |   \
+\033[33mis sleeping\033[0m    |\n"
+# define MSG_THINKING "|\033[36m%10ld\033[0m|%4d   |   \
+\033[33mis thinking\033[0m    |\n"
+# define MSG_SATISFIED "|\033[36m%10ld\033[0m|   \
+\033[32mall philos satisfied\033[0m   |\n"
+# define MSG_DEAD "|\033[36m%10ld\033[0m|%4d   |       \
+\033[31mdied\033[0m       |\n"
 
 typedef struct s_info
 {
@@ -91,7 +105,7 @@ void		processes_init(t_philo *philos);
 
 // Cleanup
 
-void		end_simulation(t_philo *philos);
+void		checking_threads(t_philo *philos);
 void		kill_philos(t_philo *philos);
 void		clean_sim(t_philo *philos);
 

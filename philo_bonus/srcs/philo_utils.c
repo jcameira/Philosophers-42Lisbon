@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 02:56:42 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/21 02:07:21 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/23 14:31:59 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,12 +65,21 @@ int	ft_atoi(const char *str)
 
 void	log_state(int state, t_philo *philo)
 {
-	const char	*messages[5] = {MSG_FORK, MSG_EATING, MSG_SLEEPING,
-		MSG_THINKING, MSG_DEAD};
+	const char	*messages[6] = {MSG_FORK, MSG_EATING, MSG_SLEEPING,
+		MSG_THINKING, MSG_SATISFIED, MSG_DEAD};
 
-	sem_wait(philo->info->sem_print);
-	printf(messages[state], gettimems() - philo->info->start_time, philo->id);
-	sem_post(philo->info->sem_print);
+	if (state == SATISFIED)
+	{
+		sem_wait(philo->info->sem_print);
+		printf(messages[state], gettimems() - philo->info->start_time);
+	}
+	else
+	{
+		sem_wait(philo->info->sem_print);
+		printf(messages[state], gettimems()
+			- philo->info->start_time, philo->id);
+		sem_post(philo->info->sem_print);
+	}
 }
 
 void	in_action(suseconds_t time_to_wait)

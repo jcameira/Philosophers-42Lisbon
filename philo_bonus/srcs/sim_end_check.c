@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 03:53:33 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/21 16:22:08 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/23 14:22:17 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,6 +33,7 @@ void	*meals_func(void *philo)
 	satisfied = -1;
 	while (++satisfied < philos->info->number_of_philo)
 		sem_wait(philos->info->sem_eat);
+	log_state(SATISFIED, philos);
 	sem_post(philos->info->sem_death);
 	return (NULL);
 }
@@ -43,6 +44,8 @@ void	*monitor_func(void *philo)
 	int		i;
 
 	philos = (t_philo *)philo;
+	sem_wait(philos->info->sem_start);
+	sem_post(philos->info->sem_start);
 	while (1)
 	{
 		pthread_mutex_lock(philos->monitor_mutex);
@@ -53,12 +56,10 @@ void	*monitor_func(void *philo)
 			log_state(DEAD, philos);
 			sem_wait(philos->info->sem_print);
 			sem_post(philos->info->sem_death);
+			i = -1;
 			if (philos->info->times_must_eat > -1)
-			{
-				i = -1;
 				while (++i < philos->info->number_of_philo)
 					sem_post(philos->info->sem_eat);
-			}
 			return (NULL);
 		}
 		pthread_mutex_unlock(philos->monitor_mutex);

@@ -6,14 +6,20 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 02:58:08 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/21 16:20:53 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/23 14:25:31 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include <philosophers_bonus.h>
 
-void	end_simulation(t_philo *philos)
+void	checking_threads(t_philo *philos)
 {
+	if (philos->info->times_must_eat > -1)
+	{
+		pthread_create(&philos->info->verify_satisfied, NULL, meals_func,
+			philos);
+		pthread_detach(philos->info->verify_satisfied);
+	}
 	pthread_create(&philos->info->kill_philos, NULL, kill_func, philos);
 	pthread_detach(philos->info->kill_philos);
 }
@@ -22,14 +28,8 @@ void	processes_init(t_philo *philos)
 {
 	int	i;
 
-	if (philos->info->times_must_eat > -1)
-	{
-		pthread_create(&philos->info->verify_satisfied, NULL, meals_func,
-			philos);
-		pthread_detach(philos->info->verify_satisfied);
-	}
 	i = -1;
-	philos->info->start_time = gettimems();
+	sem_wait(philos->info->sem_start);
 	while (++i < philos->info->number_of_philo)
 	{
 		philos[i].last_meal = gettimems();
@@ -42,7 +42,10 @@ void	processes_init(t_philo *philos)
 		}
 		usleep(100);
 	}
-	end_simulation(philos);
+	printf(SIM_START);
+	philos->info->start_time = gettimems();
+	sem_post(philos->info->sem_start);
+	checking_threads(philos);
 }
 
 t_philo	*philo_init(t_info *info)
@@ -76,15 +79,16 @@ void	info_init(t_info *info, int argc, char **argv)
 	else
 		info->times_must_eat = -1;
 	info->philo_satisfied = 0;
+	sem_unlink(SEM_START);
 	sem_unlink(SEM_FORKS);
 	sem_unlink(SEM_PRINT);
 	sem_unlink(SEM_EAT);
 	sem_unlink(SEM_DEATH);
+	info->sem_start = sem_open(SEM_START, O_CREAT | O_EXCL, S_IRWXU, 1);
 	info->sem_forks = sem_open(SEM_FORKS, O_CREAT | O_EXCL, S_IRWXU,
 			info->number_of_philo);
 	info->sem_print = sem_open(SEM_PRINT, O_CREAT | O_EXCL, S_IRWXU, 1);
 	info->sem_eat = sem_open(SEM_EAT, O_CREAT | O_EXCL, S_IRWXU, 1);
 	sem_wait(info->sem_eat);
-	info->sem_death = sem_open(SEM_DEATH, O_CREAT | O_EXCL, S_IRWXU, 1);
-	sem_wait(info->sem_death);
+	info->sem_death = sem_open(SEM_DEATH, O_CREAT | O_EXCL, S_IRWXU, 0);
 }

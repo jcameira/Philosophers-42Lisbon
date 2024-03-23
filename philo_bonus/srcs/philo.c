@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 03:52:40 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/21 16:17:07 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/23 14:31:07 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,13 +55,16 @@ void	philo_func(t_philo *philo)
 	t_philo	*philos;
 
 	philos = (t_philo *)philo;
+	sem_wait(philos->info->sem_start);
+	philos->info->start_time = gettimems();
+	sem_post(philos->info->sem_start);
 	pthread_mutex_lock(philos->monitor_mutex);
 	philos->last_meal = gettimems();
 	pthread_mutex_unlock(philos->monitor_mutex);
 	if (philos->info->number_of_philo == 1)
 		single_philo(philos);
 	if (philos->id % 2 == 0)
-		usleep(philos->info->number_of_philo);
+		usleep(philos->info->number_of_philo * 2);
 	while (1)
 	{
 		usleep(100);
