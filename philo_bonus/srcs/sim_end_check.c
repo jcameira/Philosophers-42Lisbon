@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/14 03:53:33 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/23 20:33:36 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/25 01:29:28 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,7 @@ void	*kill_func(void *philo)
 
 	philos = (t_philo *)philo;
 	sem_wait(philos->info->sem_death);
+	philos->info->philo_dead = 1;
 	if (philos->info->times_must_eat > -1)
 		usleep(1000);
 	kill_philos(philos);
@@ -33,7 +34,8 @@ void	*meals_func(void *philo)
 	satisfied = -1;
 	while (++satisfied < philos->info->number_of_philo)
 		sem_wait(philos->info->sem_eat);
-	log_state(SATISFIED, philos);
+	if (!philos->info->philo_dead)
+		log_state(SATISFIED, philos);
 	sem_post(philos->info->sem_death);
 	return (NULL);
 }

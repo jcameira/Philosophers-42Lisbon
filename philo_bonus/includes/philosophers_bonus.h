@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 02:50:52 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/23 14:10:34 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/25 01:27:46 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,6 +72,7 @@ typedef struct s_info
 	int			time_to_sleep;
 	int			times_must_eat;
 	int			philo_satisfied;
+	int			philo_dead;
 	sem_t		*sem_start;
 	sem_t		*sem_forks;
 	sem_t		*sem_print;

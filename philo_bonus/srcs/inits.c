@@ -6,7 +6,7 @@
 /*   By: jcameira <jcameira@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/03/13 02:58:08 by jcameira          #+#    #+#             */
-/*   Updated: 2024/03/23 19:49:13 by jcameira         ###   ########.fr       */
+/*   Updated: 2024/03/25 01:28:11 by jcameira         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,6 +78,7 @@ void	info_init(t_info *info, int argc, char **argv)
 		info->times_must_eat = ft_atoi(argv[5]);
 	else
 		info->times_must_eat = -1;
+	info->philo_dead = 0;
 	info->philo_satisfied = 0;
 	sem_unlink(SEM_START);
 	sem_unlink(SEM_FORKS);
